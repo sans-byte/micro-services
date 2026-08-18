@@ -3,8 +3,11 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/health",(req,res)=>{
-    res.json({message:"Server is running"});
-})
+app.get("/health", (req, res) => {
+  res.json({
+    status: "ok",
+    service: "product-service",
+  });
+});
 
 export default app;
