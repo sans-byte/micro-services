@@ -17,7 +17,7 @@ model Product {
   sku         String   @unique
   name        String
   description String?
-  pricePaise  BigInt   @map("price_paise")
+  pricePaise  Int      @map("price_paise")
   stock       Int
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")

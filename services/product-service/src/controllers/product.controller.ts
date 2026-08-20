@@ -1,25 +1,48 @@
 import type { Request, Response } from "express";
 import type { ProductService } from "../services/product.service";
-import type { Product } from "../types";
+import { createProductSchema } from "../schemas/product.schema";
+import { Prisma } from "../generated/prisma/client";
 
 export default class ProductController {
     constructor(private productService: ProductService){}
 
-    async getProducts(res: Response){
-        const products = await this.productService.getProducts();
-        res.status(200).json(products);
-    }
-
-    async createProducts(req:Request, res:Response){
-        const data : Product = req.body;
+    async getProducts(req: Request, res: Response){
         try {
-            const product = await this.productService.createProducts(data);
-            res.status(201).json(product);
+            const products = await this.productService.getProducts();
+            res.status(200).json(products);
         } catch (error) {
             res.status(500).json({
-                success:false,
-                error: error instanceof Error ? error.message : "Failed to create product"
-            })
+                success: false,
+                error: "Failed to fetch products"
+            });
+        }
+    }
+
+    async createProducts(req: Request, res: Response){
+        const parsed = createProductSchema.safeParse(req.body);
+        if (!parsed.success) {
+            res.status(400).json({
+                success: false,
+                error: parsed.error.issues.map(issue => issue.message)
+            });
+            return;
+        }
+
+        try {
+            const product = await this.productService.createProducts(parsed.data);
+            res.status(201).json(product);
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+                res.status(409).json({
+                    success: false,
+                    error: "A product with this sku already exists"
+                });
+                return;
+            }
+            res.status(500).json({
+                success: false,
+                error: "Failed to create product"
+            });
         }
     }
 }
