@@ -2,5 +2,5 @@ import "dotenv/config";
 import app from "./app";
 
 app.listen(8080, ()=>{
-    console.log("Server started");
+    console.log("Server started at Port 8080");
 })

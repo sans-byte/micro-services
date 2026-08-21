@@ -1,6 +1,6 @@
 import { ProductServiceError, ProductServiceTimeoutError } from "../errors/domain-errors";
 
-const REQUEST_TIMEOUT_MS = 10000;
+const REQUEST_TIMEOUT_MS = 2000;
 
 export type ProductDto = {
     id: string;
