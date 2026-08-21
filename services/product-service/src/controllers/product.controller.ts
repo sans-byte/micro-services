@@ -20,14 +20,21 @@ export default class ProductController {
 
     async getProductById(req:Request, res:Response){
         try {
-            const id = req.params.id as string; 
+            const id = req.params.id as string;
             const product = await this.productService.getProductById(id);
-            return res.status(200).json(product);
+            if (!product) {
+                res.status(404).json({
+                    success: false,
+                    error: "Product not found"
+                });
+                return;
+            }
+            res.status(200).json(product);
         } catch (error) {
-            res.status(400).json({
-                success:false,
-                error:"Product not found"
-            })
+            res.status(500).json({
+                success: false,
+                error: "Failed to fetch product"
+            });
         }
     }
 

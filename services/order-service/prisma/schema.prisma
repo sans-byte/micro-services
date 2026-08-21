@@ -13,11 +13,14 @@ datasource db {
 }
 
 model Order {
-  id          String   @id @default(uuid())
-  productId   String   @unique
-  quantity    Int       
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id             String   @id @default(uuid())
+  productId      String   @map("product_id")
+  quantity       Int
+  unitPricePaise Int      @map("unit_price_paise")
+  totalPaise     Int      @map("total_paise")
+  status         String   @default("CREATED")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   @@map("orders")
 }
